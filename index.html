@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ4C08LNW4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KQ4C08LNW4');
+    </script>
+
+    <meta name="description" content="LLM Task Rankings evaluates and compares Large Language Models across key NLP task categories including Harm, Question Answering, Toxicity Detection, Summarization, Reasoning, and Sentiment Analysis.">
+
+    <link rel="stylesheet" href="css/llmrankings.css">
+    <link rel="stylesheet" href="css/modern.css">
+
+    <title>LLM Task Rankings</title>
+    <style type="text/css">
+      @media (max-width: 768px) {
+        .col-centered {
+          display: inline-block;
+          float: none;
+          text-align: left;
+          margin-right: -4px;
+        }
+        .row-centered {
+          text-align: center;
+        }
+      }
+
+      body {
+        font-family: Helvetica, Arial;
+      }
+
+      table td {
+        vertical-align: top;
+      }
+
+      .table-fit {
+        white-space: nowrap;
+        width: 5%;
+      }
+
+      td {
+        padding-top: 2px;
+        padding-bottom: 2px;
+      }
+
+      a {
+        color: blue;
+      }
+
+      .csr-barchart {
+        display: none;
+      }
+
+      .area_group_selector { cursor: pointer; }
+
+      .bluefont {
+        color: blue;
+      }
+
+      input { cursor: pointer; }
+
+      @font-face {
+        font-family: 'News Cycle';
+        font-style: normal;
+        font-weight: 400;
+        src: local('News Cycle'), local('NewsCycle'),
+             url(https://fonts.gstatic.com/s/newscycle/v13/d03oiboZGiaNuMDvH253CgsYbbCjybiHxArTLjt7FRU.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+      }
+      @font-face {
+        font-family: 'News Cycle';
+        font-style: normal;
+        font-weight: 400;
+        src: local('News Cycle'), local('NewsCycle'),
+             url(https://fonts.gstatic.com/s/newscycle/v13/9Xe8dq6pQDsPyVH2D3tMQgzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+      }
+
+      .note {
+        font-weight: bold;
+      }
+
+      .areaname {
+        font-variant: small-caps;
+        font-size: -1;
+      }
+
+      .barchart {
+        font-size: +1;
+      }
+
+      /* Task panel */
+      .task-group + .task-group {
+        border-top: 1px solid #eee;
+        padding-top: 8px;
+      }
+
+      .task-header:hover {
+        opacity: 0.85;
+      }
+    </style>
+
+    <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <form id="rankform" name="rankform" action="" method="get">
+        <div class="page-header">
+
+          <h1>Large Language Model Task Benchmark Ranking</h1>
+
+          <div>
+            <div>
+              <p class="welcome-text">
+                Welcome to the LLM Capability Benchmark Ranking platform, designed to evaluate and rank Large Language Models (LLMs) based on their performance across a structured set of cognitive capabilities and fine-grained skills. Our evaluations cover 13 core capabilities — including <strong>Reasoning</strong>, <strong>Narrative Understanding</strong>, <strong>Ethical / Fair Response Generation</strong>, <strong>Adherence to Instructions</strong>, and more — spanning 82 individual benchmark datasets shared across all evaluated models. Each model's score is the average of its performance across all selected datasets, with higher scores indicating stronger overall capability.
+              </p>
+              <p class="welcome-text">
+                Use the checkboxes on the left to select which capabilities and skills to include in the ranking. Expand any capability <span class="hovertip">&#9658;</span> to see its constituent skills and toggle them on or off. On the right, click a model row to expand it and view a per-capability, per-skill, and per-dataset breakdown of its scores. For each skill, the score shown is the aggregate (sum) of its underlying dataset scores.
+              </p>
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                  Select Model Temperature for ranking.
+                  <label for="temp">Temperature: </label>
+                  <select id="temp" name="temp">
+                    <optgroup label="temperature">
+                      <option value="0.2" selected="selected">0.2</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr style="border: none; height: 1px; background-color: #ccc;">
+
+          <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+
+            <!-- Left Panel: Task / Dataset selector -->
+            <div style="flex: 0 0 450px; max-width: 100%;" class="text-left">
+              <div class="table-responsive">
+                <p class="ai-area">
+                  Capabilities &amp; Skills
+                  <span class="toggle-buttons" style="margin-left:12px;">
+                    <button type="button" class="toggle-button" id="all-on">On</button>
+                    <button type="button" class="toggle-button" id="all-off">Off</button>
+                  </span>
+                </p>
+                <p style="font-size:12px; color:#666; margin-bottom:12px;">
+                  Click a capability name <span class="hovertip">&#9658;</span> to expand its skills.
+                </p>
+                <div id="task-list">
+                  <!-- Populated dynamically by llm-tasks.js -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Panel: Ranked model table -->
+            <div style="flex: 1; min-width: 300px;" class="text-center">
+              <div style="max-height: 80vh; overflow-y: auto; padding-right: 10px;">
+                <table class="table table-sm table-striped" id="llm-ranking-table" style="border-collapse: separate; border-spacing: 0 4px; width: 100%;">
+                  <thead>
+                    <tr>
+                      <th style="text-align: left; font-weight: bold;">Rank</th>
+                      <th style="text-align: left; font-weight: bold;">LLM</th>
+                      <th style="text-align: right; font-weight: bold;">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody id="llm-table-body">
+                    <!-- Populated dynamically by llm-tasks.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <hr style="border: none; height: 1px; background-color: #ccc; margin: 10px 0;">
+
+          <div class="page-footer">
+            <p>
+              This ranking platform is developed by the <a href="https://karmake2.github.io/" class="orange-link">Bridge-AI</a> Lab, Department of Computer Science, University of Central Florida, as part of ongoing research into fairness, bias mitigation, and trustworthiness in large language models. All results are based on systematically designed benchmark datasets and transparent scoring criteria. Model scores represent averages across selected datasets at the specified temperature setting; models missing data for a given dataset are ranked based on the datasets for which results are available.
+            </p>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <script src="llm-tasks.js"></script>
+
+  </body>
+</html>
